@@ -1,16 +1,29 @@
 from flask import Flask, render_template, request, jsonify
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import concurrent.futures
 from flask_cors import CORS
-import time
+import os
+import stat
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow requests from any origin
+
+# Function to make files executable
+def make_executable(path):
+    st = os.stat(path)
+    os.chmod(path, st.st_mode | stat.S_IEXEC)
+
+# Set paths to Chrome and ChromeDriver binaries
+chrome_binary_path = os.path.join(os.getcwd(), 'chrome')  # Assuming the 'chrome' binary is in the root directory
+chromedriver_binary_path = os.path.join(os.getcwd(), 'chromedriver')  # Assuming the 'chromedriver' binary is in the root directory
+
+# Ensure the Chrome and ChromeDriver binaries are executable
+make_executable(chrome_binary_path)
+make_executable(chromedriver_binary_path)
 
 @app.route("/")
 def index():
@@ -22,9 +35,11 @@ def fetch_shop_now_link(service_link):
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    options.binary_location = "/usr/bin/google-chrome"  # Path to Chrome binary
+    options.binary_location = chrome_binary_path  # Path to the local Chrome binary
 
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+    # Use the local ChromeDriver binary
+    service = ChromeService(executable_path=chromedriver_binary_path)
+    driver = webdriver.Chrome(service=service, options=options)
 
     try:
         driver.get(service_link)
@@ -59,7 +74,13 @@ def scrape_links():
 
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
-        driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
+        options.binary_location = chrome_binary_path  # Path to the local Chrome binary
+
+        # Use the local ChromeDriver binary
+        service = ChromeService(executable_path=chromedriver_binary_path)
+        driver = webdriver.Chrome(service=service, options=options)
 
         base_url = f"https://{ibo_number}.acnibo.com/us-en/services"
         print(f"Navigating to {base_url}")
