@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow requests from any origin
 
 # Path to Chrome binary after installation
-chrome_binary_path = '/tmp/chrome/'
+chrome_binary_path = '/tmp/chrome/chrome'
 chromedriver_path = os.path.join(os.getcwd(), 'chromedriver')
 
 @app.route("/")
