@@ -1,5 +1,4 @@
 import os
-import stat
 from flask import Flask, render_template, request, jsonify
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -13,7 +12,7 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow requests from any origin
 
 # Path to Chrome binary after installation
-chrome_binary_path = '/app/chrome'
+chrome_binary_path = '/tmp/chrome/chrome'
 
 @app.route("/")
 def index():
