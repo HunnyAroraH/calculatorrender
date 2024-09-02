@@ -11,9 +11,17 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow requests from any origin
 
-# Path to Chrome binary after installation
-chrome_binary_path = '/tmp/chrome/opt/google/chrome/chrome'
+# Puppeteer installs Chromium in node_modules
+chrome_binary_path = os.path.join(os.getcwd(), 'node_modules', 'puppeteer', '.local-chromium', 'linux-XXXXXX', 'chrome-linux', 'chrome')
+
+# Puppeteer will handle the ChromeDriver installation
 chromedriver_path = os.path.join(os.getcwd(), 'chromedriver')
+
+# Debugging output
+print(f"Chromium binary path: {chrome_binary_path}")
+print(f"Chromedriver path: {chromedriver_path}")
+print(f"Checking if Chromium binary exists: {os.path.exists(chrome_binary_path)}")
+print(f"Checking if Chromedriver exists: {os.path.exists(chromedriver_path)}")
 
 @app.route("/")
 def index():
@@ -25,7 +33,7 @@ def fetch_shop_now_link(service_link):
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    options.binary_location = chrome_binary_path  # Path to the installed Chrome binary
+    options.binary_location = chrome_binary_path  # Path to Puppeteer's Chromium binary
 
     # Use the local ChromeDriver binary
     service = ChromeService(executable_path=chromedriver_path)
@@ -66,7 +74,7 @@ def scrape_links():
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-dev-shm-usage')
-        options.binary_location = chrome_binary_path  # Path to the installed Chrome binary
+        options.binary_location = chrome_binary_path  # Path to Puppeteer's Chromium binary
 
         # Use the local ChromeDriver binary
         service = ChromeService(executable_path=chromedriver_path)
