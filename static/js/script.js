@@ -653,7 +653,7 @@ document.getElementById('submitIboBtn').addEventListener('click', function () {
     // Show loading indicator or progress bar (optional)
     alert('Generating links, please wait...');
 
-    fetch('scrape-links', {
+    fetch('https://calculatorrender.onrender.com/scrape-links', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
