@@ -20,6 +20,10 @@ def fetch_shop_now_link(service_link):
     print(f"Starting fetch for: {service_link}")
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.binary_location = "/usr/bin/google-chrome"  # Path to Chrome binary
+
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
 
     try:
