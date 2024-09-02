@@ -13,6 +13,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})  # Allow requests from any origin
 
 # Path to Chrome binary after installation
 chrome_binary_path = '/tmp/chrome/chrome'
+chromedriver_path = os.path.join(os.getcwd(), 'chromedriver')
 
 @app.route("/")
 def index():
@@ -27,7 +28,7 @@ def fetch_shop_now_link(service_link):
     options.binary_location = chrome_binary_path  # Path to the installed Chrome binary
 
     # Use the local ChromeDriver binary
-    service = ChromeService(executable_path=os.path.join(os.getcwd(), 'chromedriver'))
+    service = ChromeService(executable_path=chromedriver_path)
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
@@ -68,7 +69,7 @@ def scrape_links():
         options.binary_location = chrome_binary_path  # Path to the installed Chrome binary
 
         # Use the local ChromeDriver binary
-        service = ChromeService(executable_path=os.path.join(os.getcwd(), 'chromedriver'))
+        service = ChromeService(executable_path=chromedriver_path)
         driver = webdriver.Chrome(service=service, options=options)
 
         base_url = f"https://{ibo_number}.acnibo.com/us-en/services"
